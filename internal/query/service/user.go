@@ -4,14 +4,16 @@ import (
 	"context"
 	"cqrs-base/internal/domain"
 	"cqrs-base/internal/query/repository"
+	"cqrs-base/package/connection/cache"
 )
 
 type UserQueryService struct {
 	repo repository.UserReadRepository
+	cache cache.Cache
 }
 
-func NewUserQueryService(repo repository.UserReadRepository) *UserQueryService {
-	return &UserQueryService{repo}
+func NewUserQueryService(repo repository.UserReadRepository, cache cache.Cache) *UserQueryService {
+	return &UserQueryService{repo : repo, cache : cache}
 }
 
 func (s *UserQueryService) GetUserByID(ctx context.Context, id string) (*domain.User, error) {

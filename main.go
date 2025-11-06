@@ -7,6 +7,7 @@ import (
 	userServiceQuery "cqrs-base/internal/query/service"
 
 	"cqrs-base/package/config"
+	"cqrs-base/package/connection/cache"
 	"cqrs-base/package/connection/database"
 	"os"
 
@@ -18,7 +19,10 @@ import (
 func main() {
 	dbConf := config.NewDatabase()
 	conf := config.NewConfig()
+	cacheConf := config.NewCache()
 	conn := database.QueryDB
+
+	cacheConn := cache.NewRedis(cache.WebRedis, cacheConf)
 	// connect to database read or replicate db
 	queryDBConn := database.NewDatabase(conn, dbConf)
 	// main db for command query
@@ -26,7 +30,7 @@ func main() {
 	userRepo := repository.NewUserRepository(queryDBConn)
 	userQueryRepo := userRepoQuery.NewUserReadRepository(commandDBConn)
 	usersvc  := userServiceCommand.NewUserService(userRepo)
-	userQuerySvc := userServiceQuery.NewUserQueryService(userQueryRepo)
+	userQuerySvc := userServiceQuery.NewUserQueryService(userQueryRepo, cacheConn)
 
 	cmds := []*cli.Command{}
 	cmds = append(cmds, api.ServeAPI(conf, usersvc, userQuerySvc)...)
