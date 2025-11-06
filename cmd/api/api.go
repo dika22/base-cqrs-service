@@ -70,7 +70,7 @@ func ServeAPI(cfg *config.Config, usersvc *service.UserService, userQuerySvc *us
 	return []*cli.Command{
 		{
 			Name:   CmdServeHTTP,
-			Usage:  "Serve Document Service",
+			Usage:  "Serve Base Service",
 			Action: h.ServeAPI,
 		},
 	}

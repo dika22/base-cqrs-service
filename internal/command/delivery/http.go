@@ -25,7 +25,7 @@ func (h *UserHandler) DeleteUser(e echo.Context) error {
 
 func NewUserHandler(userAPI *echo.Group, s *service.UserService)  {
 	u := UserHandler{service: s}
-	userAPI.POST("", u.CreateUser).Name = "users.signup"
-	userAPI.PUT("/:id", u.UpdateUser).Name = "users.login"
-	userAPI.DELETE("/:id", u.DeleteUser).Name = "users.login"
+	userAPI.POST("", u.CreateUser).Name = "users.create"
+	userAPI.PUT("/:id", u.UpdateUser).Name = "users.update"
+	userAPI.DELETE("/:id", u.DeleteUser).Name = "users.delete"
 }
