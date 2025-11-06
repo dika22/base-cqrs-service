@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"cqrs-base/internal/domain"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -22,26 +23,24 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (r *userRepository) Save(ctx context.Context, user *domain.User) error {
-	// _, err := r.db.ExecContext(ctx,
-	// 	`INSERT INTO users (id, name, email, created_at, updated_at)
-	// 	 VALUES ($1, $2, $3, $4, $5)`,
-	// 	user.ID, user.Name, user.Email, user.CreatedAt, user.UpdatedAt)
-	// return err
+	if err := r.db.WithContext(ctx).Exec(`INSERT INTO users (id, name, email, created_at, updated_at)
+	 VALUES ($1, $2, $3, $4, $5)`,user.ID, user.Name, user.Email, user.CreatedAt, user.UpdatedAt).Error; err != nil {
+		return err
+	 }
 	return  nil
 }
 
 func (r *userRepository) Update(ctx context.Context, user *domain.User) error {
-	// _, err := r.db.ExecContext(ctx,
-	// 	`UPDATE users SET name=$1, email=$2, updated_at=$3 WHERE id=$4`,
-	// 	user.Name, user.Email, time.Now(), user.ID)
-	// return err
-
+	if err := r.db.WithContext(ctx).Exec(`UPDATE users SET name=$1, email=$2, updated_at=$3 WHERE id=$4`,
+		user.Name, user.Email, time.Now(), user.ID).Error; err != nil {
+			return err
+	}
 	return  nil
 }
 
 func (r *userRepository) Delete(ctx context.Context, id string) error {
-	// _, err := r.db.ExecContext(ctx, `DELETE FROM users WHERE id=$1`, id)
-	// return err
-
+	if err := r.db.WithContext(ctx).Exec(`DELETE FROM users WHERE id=$1`, id).Error; err != nil {
+		return err
+	}
 	return nil
 }
